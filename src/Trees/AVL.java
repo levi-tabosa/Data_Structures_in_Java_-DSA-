@@ -1,13 +1,14 @@
+package Trees;
 class AVL<T extends Comparable<T>> {
-	Node<T> root;
+	Node root;
 
 	public void add(T elem) {
 		root = add(elem, root);
 	}
 
-	public Node<T> add(T elem, Node<T> node) {
+	public Node add(T elem, Node node) {
 		if(node == null) {
-			return new Node<>(elem);
+			return new Node(elem);
 		}
 		if (elem.compareTo(node.value) > 0) {
 			node.r = add(elem, node.r);
@@ -18,7 +19,7 @@ class AVL<T extends Comparable<T>> {
 		return balance(node);
 	}
 
-	public Node<T> balance(Node<T> node) {
+	public Node balance(Node node) {
 		if (node == null){
 			return null;
 		}
@@ -41,21 +42,21 @@ class AVL<T extends Comparable<T>> {
 		return node;
 	}
 
-	public Node<T> rotateR(Node<T> node) {
-		Node<T> u = node.l;
+	public Node rotateR(Node node) {
+		Node u = node.l;
 		node.l = u.r;
 		u.r = node;
 		return u;
 	}
 
-	public Node<T> rotateL(Node<T> node) {
-		Node<T> z = node.r;
+	public Node rotateL(Node node) {
+		Node z = node.r;
 		node.r = z.l;
 		z.l = node;
 		return z;
 	}
 
-	public int getbf(Node<T> root) {
+	public int getbf(Node root) {
 		return h(root.r) - h(root.l);
 	}
 
@@ -63,7 +64,7 @@ class AVL<T extends Comparable<T>> {
 		return h(root);
 	}
 
-	public int h(Node<T> node) {
+	public int h(Node node) {
 		if (node != null) {
 			int hl = h(node.l) + 1, hr = h(node.r) + 1;
 			return Math.max(hl, hr);
@@ -75,7 +76,7 @@ class AVL<T extends Comparable<T>> {
 		root = remove(elem, root);
 	}
 
-	public Node<T> remove(T elem, Node<T> node) {
+	public Node remove(T elem, Node node) {
 		if(node == null) {
 			return null;
 		}
@@ -95,7 +96,7 @@ class AVL<T extends Comparable<T>> {
 		return balance(node);
 	}
 
-	public T max(Node<T> node) {
+	public T max(Node node) {
 		while(node.r != null) {
 			node = node.r;
 		}
@@ -118,7 +119,7 @@ class AVL<T extends Comparable<T>> {
 		print(root, 0);
 	}
 
-	private void print(Node<T> node, int lvl) {
+	private void print(Node node, int lvl) {
 		if (node != null) {
 			print(node.r, lvl + 1);
 			for (int i = 0; i < lvl << 1; i++)
@@ -129,7 +130,7 @@ class AVL<T extends Comparable<T>> {
 		}
 	}
 
-	public String in(Node<T> node) {
+	public String in(Node node) {
 		String ret = node.value.toString();
 
 		if (node.l != null) {
@@ -142,7 +143,7 @@ class AVL<T extends Comparable<T>> {
 		return ret;
 	}
 
-	public String pre(Node<T> node) {
+	public String pre(Node node) {
 		String ret = node.value.toString() + " ";
 
 		if (node.l != null) {
@@ -154,13 +155,15 @@ class AVL<T extends Comparable<T>> {
 
 		return ret;
 	}
-}
-
-class Node<T>{
+	
+	private class Node{
 	T value;
-	Node<T> l, r;
+	Node l, r;
 
 	Node(T val) {
 		value = val;
 	}
 }
+}
+
+
