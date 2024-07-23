@@ -1,71 +1,47 @@
 package lists;
 
 public class ArrayListClone<T> {
-      private Object[] arrayInterno;
+      private Object[] innerArray;
       private int count;
 
       public ArrayListClone() {
-            this.arrayInterno = new Object[10];
-            this.count = 0;
+            innerArray = new Object[10];
+            count = 0;
       }
 
-      public ArrayListClone(Object[] arrayInterno) {
-            this.arrayInterno = arrayInterno;
-            this.count = arrayInterno.length;
+      public ArrayListClone(Object[] innerArray) {
+            this.innerArray = innerArray;
+            count = innerArray.length;
       }
 
-      public int indexOf(Object elem) {
+      public int indexOf(Object e) {
             for (int i = 0; i < count; i++) {
-                  if (elem.equals(arrayInterno[i]))
-                        return i;
+                  if (e.equals(innerArray[i])) return i;
             }
             return -1;
       }
 
-      public int busca(Object elem, int min, int max) {
-            if (min > max)
-                  return -1;
-            int chute = (min + max) / 2;
-            if (get(chute).equals(elem))
-                  return chute;
-
-            int a = busca(elem, chute + 1, max);
-            if (a > 0)
-                  return a;
-            else
-                  return busca(elem, min, chute - 1);
-      }
-
-      public int indexOfLast(Object elem) {
-            for (int i = count - 1; i >= 0; i--) {
-                  if (elem.equals(arrayInterno[i]))
-                        return i;
-            }
-
-            return -1;
-      }
-
-      public void add(int index, T elem) {
+      public void addAt(int index, T e) {
             add(null);
             count--;
             for (int i = count; i > index; i--) {
-                  arrayInterno[i] = arrayInterno[i - 1];
+                  innerArray[i] = innerArray[i - 1];
             }
-            arrayInterno[index] = elem;
+            innerArray[index] = e;
             count++;
       }
 
-      public void remove(int index) {
+      public void removeAt(int index) {
             for (int i = index; i < count - 1; i++) {
-                  arrayInterno[i] = arrayInterno[i + 1];
+                  innerArray[i] = innerArray[i + 1];
             }
             count--;
       }
 
-      public void remove(Object elem) {
-            int pos = indexOf(elem);
+      public void removeFirst(Object e) {
+            int pos = indexOf(e);
             for (int i = pos; i < count - 1; i++) {
-                  arrayInterno[i] = arrayInterno[i + 1];
+                  innerArray[i] = innerArray[i + 1];
             }
             count--;
       }
@@ -74,73 +50,64 @@ public class ArrayListClone<T> {
             return count;
       }
 
-      public void addAll(ArrayListClone<T> lista) {
+      public void addAll(ArrayListClone<T> list) {
             for (int i = 0; i < count; i++) {
-                  add(lista.get(i));
+                  add(list.get(i));
             }
       }
 
-      public boolean contains(Object elem) {
+      public boolean contains(Object e) {
             for (int i = 0; i < count; i++) {
-                  if (elem.equals(arrayInterno[i]))
-                        return true;
+                  if (e.equals(innerArray[i])) return true;
             }
-
             return false;
       }
 
       public ArrayListClone<T> subList(int fromIndex, int toIndex) {
             ArrayListClone<T> ret = new ArrayListClone<T>();
-
             for (int i = toIndex; i < toIndex; i++) {
                   ret.add(get(i));
             }
-
             return ret;
       }
 
       public String toString() {
-            String out = "";
+            String ret = "";
             for (int i = 0; i < count - 1; i++) {
-                  out = out + arrayInterno[i] + ", ";
+                  ret = ret + innerArray[i] + ", ";
             }
-
-            return "[" + out + arrayInterno[count - 1] + "]";
+            return "[" + ret + innerArray[count - 1] + "]";
       }
 
       public boolean isEmpty() {
             return count == 0;
       }
 
-      public void add(T elem) {
-            if (count == arrayInterno.length) {
-                  Object[] aux = new Object[arrayInterno.length + arrayInterno.length << 1];
+      public void add(T e) {
+            if (count == innerArray.length) {
+                  Object[] aux = new Object[innerArray.length + innerArray.length << 1];
                   for (int i = 0; i < count; i++) {
-                        aux[i] = arrayInterno[i];
+                        aux[i] = innerArray[i];
                   }
-                  arrayInterno = aux;
+                  innerArray = aux;
             }
-            arrayInterno[count] = elem;
+            innerArray[count] = e;
             count++;
       }
 
       public T get(int index) {
-            if (index >= count)
-                  throw new ArrayIndexOutOfBoundsException(index);
-            @SuppressWarnings("unchecked")
-            T item = (T) arrayInterno[index];
-            return item;
+            if (index >= count) throw new ArrayIndexOutOfBoundsException(index);
+            return (T) innerArray[index];
       }
 
-      public void set(int index, T elem) {
-            if (index >= count)
-                  throw new ArrayIndexOutOfBoundsException(index);
-            arrayInterno[index] = elem;
+      public void set(int index, T e) {
+            if (index >= count) throw new ArrayIndexOutOfBoundsException(index);
+            innerArray[index] = e;
       }
 
       public void clear() {
             count = 0;
-            arrayInterno = new Object[10];
+            innerArray = new Object[10];
       }
 
 }
