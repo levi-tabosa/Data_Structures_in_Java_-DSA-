@@ -62,18 +62,21 @@ public class Rope {
 		return splitAt(this, idx);
 	}
 
-	private Rope[] splitAt(Rope node, int idx) { //TODO:refactor and unfuck
+	private Rope[] splitAt(Rope node, int idx) { // changes original rope
 		if (node.chars == null) {
-			return idx < node.weight ? splitAt(node.l, idx) : splitAt(node.r, node.weight - idx);
+			return idx < node.weight ? splitAt(node.l, idx) : splitAt(node.r, idx - node.weight);
 		}
+
 		Rope otherRope = new Rope();
+
 		if (node == node.par.l) {
+			idx++;
 			otherRope.l = new Rope();
-			otherRope.l.chars = new char[node.weight - (idx)];
-			otherRope.l.weight = otherRope.weight = node.weight - (idx);
-			otherRope.weight = node.weight - (idx);
+			otherRope.l.chars = new char[node.weight - idx];
+			otherRope.l.weight = otherRope.weight = node.weight - idx;
+			otherRope.weight = node.weight - idx;
 			otherRope.r = node.par.r;
-			node.par.r = null;//ok for splitting at to the right ?? 
+			node.par.r = null;// ok for splitting at to the right ??
 			System.arraycopy(node.chars, idx, otherRope.l.chars, 0, node.weight - idx);
 			char[] aux = new char[idx];
 			System.arraycopy(node.chars, 0, aux, 0, idx);
@@ -83,28 +86,28 @@ public class Rope {
 		} else {
 			otherRope.r = new Rope();
 			otherRope.r.chars = new char[idx];
-			otherRope.r.weight = idx;
+			otherRope.r.weight = otherRope.weight = idx;
+			otherRope.weight = idx;
 			otherRope.l = node.par.l;
-			otherRope.weight = otherRope.l.weight;
-			node.par.l = null;
+			node.par.l = null; // ok for splitting at to the left ??
 			System.arraycopy(node.chars, 0, otherRope.r.chars, 0, idx);
-			char[] aux = new char[idx];
-			System.arraycopy(node.chars, 0, aux, 0, idx);
+			char[] aux = new char[node.weight - idx];
+			System.arraycopy(node.chars, idx, aux, 0, node.weight - idx);
 			node.chars = aux;
-			node.weight = idx;
+			node.weight = node.weight - idx;
 			rebalance(node.par);
 		}
 
 		return new Rope[] { this, otherRope };
 	}
 
-	private void rebalance(Rope node) {	//TODO:refactor and unfuck
-		if(node.l == null) {
+	private void rebalance(Rope node) { // TODO:refactor and unfuck
+		if (node.l == null) {
 			node.chars = node.r.chars;
 			node.weight = node.r.weight;
 			node.r = null;
 			rebalance(node.par);
-		} else if(node.r == null) {
+		} else if (node.r == null) {
 			node.chars = node.l.chars;
 			node.weight = node.l.weight;
 			node.l = null;
@@ -155,15 +158,16 @@ public class Rope {
 	}
 
 	public static void main(String[] args) {
-		Rope rope = generateRope("hello_world!!");
+		Rope rope = generateRope("hello_world");
+		System.out.println();
 		rope.print();
 		rope.visualize();
 		System.out.println(rope.length());
 
-		for (Rope r : generateRope("splitting_at5").splitAt(5)) {
+		// for (Rope r : generateRope("hello_world").splitAt(5)) {
+		for (Rope r : rope.splitAt(2)) {
 			r.print();
 			r.visualize();
 		}
-		rope.visualize();
 	}
 }
