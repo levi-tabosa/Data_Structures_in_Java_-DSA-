@@ -24,7 +24,11 @@ public class BST<T extends Comparable<T>> {
       }
    }
 
-   public Node get(T elem, Node node) {
+   public Node get(T elem) {
+      return get(elem, root);
+   }
+
+   private Node get(T elem, Node node) {
       if (node.value.equals(elem))
          return node;
 
@@ -41,7 +45,7 @@ public class BST<T extends Comparable<T>> {
          root = remove(elem, root);
    }
 
-   public Node remove(T elem, Node node) {
+   private Node remove(T elem, Node node) {
       if (node == null) {
          return null;
       }
@@ -68,54 +72,46 @@ public class BST<T extends Comparable<T>> {
       return min(node.l);
    }
 
-   public String printaArvre(int i) {
-      if (i > 0)
-         return posOrdem(root);
-      if (i < 0)
-         return emOrdem(root);
-      return preOrdem(root);
-   }
-
-   private String emOrdem(Node node) {
+   private String TraverseInorder(Node node) {
       String aux = node.value.toString();
       if (node.l != null) {
-         aux = emOrdem(node.l) + " " + aux;
+         aux = TraverseInorder(node.l) + " " + aux;
       }
       if (node.r != null) {
-         aux += " " + emOrdem(node.r);
+         aux += " " + TraverseInorder(node.r);
       }
 
       return aux;
    }
 
-   private String posOrdem(Node node) {
+   private String TraversePostorder(Node node) {
       String aux = node.value.toString();
       if (node.r != null) {
-         aux = posOrdem(node.r) + " " + aux;
+         aux = TraversePostorder(node.r) + " " + aux;
 
       }
       if (node.l != null) {
-         aux = posOrdem(node.l) + " " + aux;
+         aux = TraversePostorder(node.l) + " " + aux;
       }
 
+      return aux;
+   }
+
+   private String TraversePreorder(Node node) {
+      String aux = node.value + "";
+
+      if (node.l != null) {
+         aux += " " + TraversePreorder(node.l);
+      }
+      if (node.r != null) {
+         aux += " " + TraversePreorder(node.r);
+      }
       return aux;
    }
 
    @Override
    public String toString() {
-      return '[' + preOrdem(root) + ']';
-   }
-
-   private String preOrdem(Node node) {
-      String aux = node.value + "";
-
-      if (node.l != null) {
-         aux += " " + preOrdem(node.l);
-      }
-      if (node.r != null) {
-         aux += " " + preOrdem(node.r);
-      }
-      return aux;
+      return '[' + TraversePreorder(root) + ']';
    }
 
    public static void main(String[] args) {
@@ -129,18 +125,18 @@ public class BST<T extends Comparable<T>> {
       a.add(3);
       a.add(9);
 
-      System.out.println(a.emOrdem(a.root));
-      System.out.println(a.preOrdem(a.root));
-      System.out.println(a.posOrdem(a.root));
+      System.out.println(a.TraverseInorder(a.root));
+      System.out.println(a.TraversePreorder(a.root));
+      System.out.println(a.TraversePostorder(a.root));
 
       System.out.println();
 
       a.remove(6);
       a.remove(4);
 
-      System.out.println(a.emOrdem(a.root));
-      System.out.println(a.preOrdem(a.root));
-      System.out.println(a.posOrdem(a.root));
+      System.out.println(a.TraverseInorder(a.root));
+      System.out.println(a.TraversePreorder(a.root));
+      System.out.println(a.TraversePostorder(a.root));
    }
 
    class Node {
