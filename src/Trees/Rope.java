@@ -35,7 +35,7 @@ public class Rope {
 		return temp;
 	}
 
-	private static Rope concatenate(Rope r1, Rope r2) {
+	public static Rope concatenate(Rope r1, Rope r2) {
 		Rope aux = new Rope();
 		aux.l = r1;
 		aux.r = r2;
@@ -44,7 +44,7 @@ public class Rope {
 		return aux;
 	}
 
-	private char charAt(int idx) {
+	public char charAt(int idx) {
 		return charAt(this, idx);
 	}
 
@@ -58,7 +58,7 @@ public class Rope {
 		return charAt(node.r, idx - node.weight);
 	}
 
-	private Rope[] splitAt(int idx) {
+	public Rope[] splitAt(int idx) {
 		return splitAt(this, idx);
 	}
 
@@ -76,7 +76,7 @@ public class Rope {
 			otherRope.l.weight = otherRope.weight = node.weight - idx;
 			otherRope.weight = node.weight - idx;
 			otherRope.r = node.par.r;
-			node.par.r = null;// ok for splitting at to the right ??
+			node.par.r = null;
 			System.arraycopy(node.chars, idx, otherRope.l.chars, 0, node.weight - idx);
 			char[] aux = new char[idx];
 			System.arraycopy(node.chars, 0, aux, 0, idx);
@@ -89,7 +89,7 @@ public class Rope {
 			otherRope.r.weight = otherRope.weight = idx;
 			otherRope.weight = idx;
 			otherRope.l = node.par.l;
-			node.par.l = null; // ok for splitting at to the left ??
+			node.par.l = null;
 			System.arraycopy(node.chars, 0, otherRope.r.chars, 0, idx);
 			char[] aux = new char[node.weight - idx];
 			System.arraycopy(node.chars, idx, aux, 0, node.weight - idx);
@@ -101,7 +101,7 @@ public class Rope {
 		return new Rope[] { this, otherRope };
 	}
 
-	private void rebalance(Rope node) { // TODO:refactor and unfuck
+	private void rebalance(Rope node) {
 		if (node.l == null) {
 			node.chars = node.r.chars;
 			node.weight = node.r.weight;
@@ -115,7 +115,7 @@ public class Rope {
 		}
 	}
 
-	private int length() {
+	public int length() {
 		return length(this);
 	}
 
@@ -142,18 +142,18 @@ public class Rope {
 	}
 
 	public void visualize() {
-		print(this, 0);
+		printTree(this, 0);
 		System.out.println();
 	}
 
-	private void print(Rope node, int lvl) {
+	private void printTree(Rope node, int lvl) {
 		if (node != null) {
-			print(node.r, lvl + 1);
+			printTree(node.r, lvl + 1);
 			for (int i = 0; i < lvl; i++) {
 				System.out.print("\t");
 			}
 			System.out.println(node.weight + " / " + (node.chars != null ? new String(node.chars) : ""));
-			print(node.l, lvl + 1);
+			printTree(node.l, lvl + 1);
 		}
 	}
 
@@ -164,7 +164,6 @@ public class Rope {
 		rope.visualize();
 		System.out.println(rope.length());
 
-		// for (Rope r : generateRope("hello_world").splitAt(5)) {
 		for (Rope r : rope.splitAt(2)) {
 			r.print();
 			r.visualize();
