@@ -1,4 +1,5 @@
 package Trees;
+
 public class BST<T extends Comparable<T>> {
    Node root;
 
@@ -72,71 +73,33 @@ public class BST<T extends Comparable<T>> {
       return min(node.l);
    }
 
-   private String TraverseInorder(Node node) {
-      String aux = node.value.toString();
-      if (node.l != null) {
-         aux = TraverseInorder(node.l) + " " + aux;
-      }
-      if (node.r != null) {
-         aux += " " + TraverseInorder(node.r);
-      }
+   public String inorder() {
+      return root != null ? TraverseInorder(root) : "";
+   }
 
-      return aux;
+   public String preorder() {
+      return root != null ? TraversePreorder(root) : "";
+   }
+
+   public String postorder() {
+      return root != null ? TraversePostorder(root) : "";
+   }
+
+   private String TraverseInorder(Node node) {
+      return node != null ? TraverseInorder(node.l) + " " + node.value + TraverseInorder(node.r) : "";
    }
 
    private String TraversePostorder(Node node) {
-      String aux = node.value.toString();
-      if (node.r != null) {
-         aux = TraversePostorder(node.r) + " " + aux;
-
-      }
-      if (node.l != null) {
-         aux = TraversePostorder(node.l) + " " + aux;
-      }
-
-      return aux;
+      return node != null ? TraversePostorder(node.r) + " " + node.value + TraversePostorder(node.l) : "";
    }
 
    private String TraversePreorder(Node node) {
-      String aux = node.value + "";
-
-      if (node.l != null) {
-         aux += " " + TraversePreorder(node.l);
-      }
-      if (node.r != null) {
-         aux += " " + TraversePreorder(node.r);
-      }
-      return aux;
+      return node != null ? node.value + " " + TraversePreorder(node.l) + TraversePreorder(node.r) : "";
    }
 
    @Override
    public String toString() {
       return '[' + TraversePreorder(root) + ']';
-   }
-
-   public static void main(String[] args) {
-      BST<Integer> a = new BST<>();
-
-      a.add(6);
-      a.add(8);
-      a.add(2);
-      a.add(4);
-      a.add(1);
-      a.add(3);
-      a.add(9);
-
-      System.out.println(a.TraverseInorder(a.root));
-      System.out.println(a.TraversePreorder(a.root));
-      System.out.println(a.TraversePostorder(a.root));
-
-      System.out.println();
-
-      a.remove(6);
-      a.remove(4);
-
-      System.out.println(a.TraverseInorder(a.root));
-      System.out.println(a.TraversePreorder(a.root));
-      System.out.println(a.TraversePostorder(a.root));
    }
 
    class Node {

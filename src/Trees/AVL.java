@@ -1,4 +1,5 @@
 package Trees;
+
 class AVL<T extends Comparable<T>> {
 	Node root;
 
@@ -7,12 +8,12 @@ class AVL<T extends Comparable<T>> {
 	}
 
 	public Node add(T elem, Node node) {
-		if(node == null) {
+		if (node == null) {
 			return new Node(elem);
 		}
 		if (elem.compareTo(node.value) > 0) {
 			node.r = add(elem, node.r);
-		//} else if(elem.compareTo(node.value) < 0) no repeat key
+			// } else if(elem.compareTo(node.value) < 0) no repeat key
 		} else {
 			node.l = add(elem, node.l);
 		}
@@ -20,12 +21,12 @@ class AVL<T extends Comparable<T>> {
 	}
 
 	public Node balance(Node node) {
-		if (node == null){
+		if (node == null) {
 			return null;
 		}
 
 		int bf = getbf(node);
-		
+
 		if (bf < -1) {
 			if (getbf(node.l) > 0) {
 				node.l = rotateL(node.l);
@@ -65,11 +66,7 @@ class AVL<T extends Comparable<T>> {
 	}
 
 	public int h(Node node) {
-		if (node != null) {
-			int hl = h(node.l) + 1, hr = h(node.r) + 1;
-			return Math.max(hl, hr);
-		}
-		return 0;
+		return node != null ? Math.max(h(node.l) + 1, h(node.r) + 1) : 0;
 	}
 
 	public void remove(T elem) {
@@ -77,13 +74,13 @@ class AVL<T extends Comparable<T>> {
 	}
 
 	public Node remove(T elem, Node node) {
-		if(node == null) {
+		if (node == null) {
 			return null;
 		}
 		if (elem.equals(node.value)) {
 			if (node.l == null || node.r == null) {
 				node = (node.l != null) ? node.l : node.r;
-		   } else {
+			} else {
 				T max = max(node.l);
 				node.value = max;
 				node.l = remove(max, node.l);
@@ -97,73 +94,75 @@ class AVL<T extends Comparable<T>> {
 	}
 
 	public T max(Node node) {
-		while(node.r != null) {
+		while (node.r != null) {
 			node = node.r;
 		}
 		return node.value;
 	}
 
-	public String inOrder() {
+	public String inorder() {
 		if (root == null)
 			return "vazio";
-		return in(root);
+		return TraverseInorder(root);
 	}
 
-	public String preOrder() {
+	public String preorder() {
 		if (root == null)
 			return "vazio";
-		return pre(root);
+		return TraversePreorder(root);
 	}
 
-	public void printTree() {
-		print(root, 0);
+	public String postorder() {
+		if (root == null)
+			return "vazio";
+		return TraversePostorder(root);
 	}
 
-	private void print(Node node, int lvl) {
+	public void visualize() {
+		visualize(root, 0);
+	}
+
+	private void visualize(Node node, int lvl) {
 		if (node != null) {
-			print(node.r, lvl + 1);
-			for (int i = 0; i < lvl << 1; i++)
+			visualize(node.r, lvl + 1);
+			for (int i = 0; i < lvl << 1; i++) {
 				System.out.print("\t");
+			}
 			System.out.println(node.value);
-			print(node.l, lvl + 1);
-
+			visualize(node.l, lvl + 1);
 		}
 	}
 
-	public String in(Node node) {
-		String ret = node.value.toString();
+	private String TraverseInorder(Node node) {
+		if (node == null) return "";
+		return TraverseInorder(node.l) + " " + node.value + TraverseInorder(node.r);
+   }
 
-		if (node.l != null) {
-			ret = " " + in(node.l) + " " + ret;
-		}
-		if (node.r != null) {
-			ret += " " + in(node.r) + " ";
-		}
+   private String TraversePostorder(Node node) {
+		if (node == null) return "";
+		return TraversePostorder(node.r) + " " + node.value + TraversePostorder(node.l);
+   }
 
-		return ret;
+   private String TraversePreorder(Node node) {
+		if(node == null) return "";
+		return node.value + " " + TraversePreorder(node.l) + TraversePreorder(node.r);
+   }
+
+	public static void main(String[] args) {
+		var a = new AVL();
+		for (int i = 0; i < 100; i++) {
+			a.add(i);
+		}
+		System.out.println(a.inorder());
+		System.out.println(a.postorder());
 	}
 
-	public String pre(Node node) {
-		String ret = node.value.toString() + " ";
+	private class Node {
+		T value;
+		Node l, r;
 
-		if (node.l != null) {
-			ret += pre(node.l) + " ";
+		Node(T val) {
+			value = val;
 		}
-		if (node.r != null) {
-			ret += pre(node.r) + " ";
-		}
-
-		return ret;
-	}
-	
-	private class Node{
-	T value;
-	Node l, r;
-
-	Node(T val) {
-		value = val;
 	}
 }
-}
-
-
