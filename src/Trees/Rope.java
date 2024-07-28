@@ -30,15 +30,6 @@ public class Rope {
 		}
 	}
 
-	public static Rope concatenate(Rope r1, Rope r2) {
-		Rope aux = new Rope();
-		aux.l = r1;
-		aux.r = r2;
-		r1.par = r2.par = aux;
-		aux.weight = r1.length();
-		return aux;
-	}
-
 	public char charAt(int idx) {
 		return charAt(this, idx);
 	}
@@ -50,7 +41,21 @@ public class Rope {
 		return idx < node.weight ? charAt(node.l, idx) : charAt(node.r, idx - node.weight);
 	}
 
-	public Rope[] splitAt(int idx) { // changes original rope
+	public static Rope concatenate(Rope r1, Rope r2) {
+		Rope aux = new Rope();
+		aux.l = r1;
+		aux.r = r2;
+		r1.par = r2.par = aux;
+		aux.weight = r1.length();
+		return aux;
+	}
+
+	public Rope insert(Rope rope, int idx) {
+		Rope[] splitRopes = splitAt(this, idx);
+		return concatenate(concatenate(splitRopes[0], rope), splitRopes[1]);
+	}
+
+	public Rope[] splitAt(int idx) { // changes original rope returns
 		return splitAt(this, idx);
 	}
 
@@ -60,9 +65,8 @@ public class Rope {
 		}
 
 		Rope otherRope = createSplitNode(node, idx);
-
 		node.weight = idx;
-		Rope aux = node; // auxiliary variable for balancing after concatenations
+		Rope aux = node; // storing variable for balancing after separating links
 
 		while (node.par != null) {
 			if (node == node.par.l) {
@@ -73,19 +77,18 @@ public class Rope {
 		}
 
 		rebalance(aux);
-
 		return new Rope[] { this, otherRope };
 	}
 
-	private Rope createSplitNode(Rope node, int idx) {
-		Rope newRope = new Rope();
-		newRope.chars = copyRange(node.chars, idx, node.weight - idx);
-		newRope.weight = node.weight - idx;
+	private Rope createSplitNode(Rope node, int idx) { // returns leaf containing the chars from node starting from idx
+		Rope newLeaf = new Rope();
+		newLeaf.chars = copyRange(node.chars, idx, node.weight - idx);
+		newLeaf.weight = node.weight - idx;
 		node.chars = copyRange(node.chars, 0, idx);
-		return newRope;
+		return newLeaf;
 	}
 
-	private void rebalance(Rope node) {
+	private void rebalance(Rope node) { // clears brokens nodes after separating links
 		while (node.par != null) {
 			if (node.par.r == null || node.par.l == null) {
 				node.par.l = node.l;
@@ -98,17 +101,17 @@ public class Rope {
 	}
 
 	private static char[] copyRange(char[] original, int start, int length) {
-		char[] aux = new char[length];
-		System.arraycopy(original, start, aux, 0, length);
-		return aux;
+		char[] copy = new char[length];
+		System.arraycopy(original, start, copy, 0, length);
+		return copy;
 	}
 
 	public int length() {
 		return length(this);
 	}
 
-	private int length(Rope rope) {
-		return rope != null ? rope.weight + length(rope.r) : 0;
+	private int length(Rope node) {
+		return node != null ? node.weight + length(node.r) : 0;
 	}
 
 	public void print() {
@@ -117,7 +120,8 @@ public class Rope {
 	}
 
 	private void print(Rope node) {
-		if (node == null) return;
+		if (node == null)
+			return;
 		if (node.chars != null) {
 			System.out.print(node.chars);
 		}
@@ -153,7 +157,8 @@ public class Rope {
 
 	public static void main(String[] args) {
 		String[] TEST_STRINGS = {
-			"hello_i_am_a_rope_data_structure_",
+				"HELLO_HELLO_BEAULTIFUL_WORLD_",
+				"hello_i_am_a_rope_data_structure_",
 		};
 
 		Rope rope = new Rope(TEST_STRINGS[0]);
@@ -163,10 +168,9 @@ public class Rope {
 			for (int j = 0; j < TEST_STRINGS[i].length(); j++) {
 				Rope[] a = new Rope(TEST_STRINGS[i]).splitAt(j);
 				System.out.println(a[0]);
-				a[0].visualize();
 				System.out.println(a[1]);
+				a[0].visualize();
 				a[1].visualize();
-				System.out.println(concatenate(a[0], a[1]));
 			}
 		}
 	}
